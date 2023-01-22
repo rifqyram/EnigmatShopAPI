@@ -1,7 +1,13 @@
+using EnigmatShopAPI.Middlewares;
 using EnigmatShopAPI.Repositories;
+using EnigmatShopAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.ConfigureLogging(loggingBuilder =>
+{
+    loggingBuilder.AddConsole();
+});
 
 // Add services to the container.
 
@@ -16,6 +22,9 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 // singleton, scoped, transient
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IPersistence, DbPersistence>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+builder.Services.AddTransient<HandleExceptionMiddleware>();
 
 var app = builder.Build();
 
@@ -25,6 +34,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<HandleExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

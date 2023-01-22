@@ -10,6 +10,6 @@ public class Purchase
     [Column(name: "trans_date")] public DateTime TransDate { get; set; }
     [Column(name: "customer_id")] public Guid CustomerId { get; set; }
 
-    public virtual Customer Customer { get; set; }
+    public virtual Customer? Customer { get; set; }
     public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
 }
